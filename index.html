@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <title>Family Base Battle Prototypes</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="app">
+    <section id="menu" class="screen active">
+      <h1>Family Base Battle Lab</h1>
+      <p class="subtitle">Four playable prototype flavors of one side-view base battle idea.</p>
+      <div id="titlePortrait" aria-label="Commander portrait placeholder">🛡️😄⚔️</div>
+      <div id="prototypeCards"></div>
+      <div class="howto">
+        <h2>How to Play</h2>
+        <ul>
+          <li>Pick a prototype and tap/click unit buttons to spend energy and deploy troops.</li>
+          <li>Units auto-move and attack. Keep pressure while protecting your base.</li>
+          <li>Use prototype-specific upgrades/abilities for advantage.</li>
+          <li>Destroy the enemy base before yours falls.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="game" class="screen">
+      <header id="topBar">
+        <button id="backBtn">← Menu</button>
+        <div id="matchInfo"></div>
+      </header>
+      <canvas id="battleCanvas" width="1280" height="480"></canvas>
+      <div id="hud"></div>
+      <div id="resultOverlay" class="hidden">
+        <div class="panel">
+          <h2 id="resultTitle"></h2>
+          <p id="resultStats"></p>
+          <button id="restartBtn">Replay Prototype</button>
+          <button id="menuBtn">Back to Menu</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="src/game.js"></script>
+</body>
+</html>
