@@ -1,15 +1,4 @@
-const FACE_THEME = {
-  tank: { emoji: '🧔', tone: '#8fb3ff', label: 'Tank' },
-  support: { emoji: '👵', tone: '#7de3db', label: 'Support' },
-  charger: { emoji: '😤', tone: '#ffc17d', label: 'Charger' },
-  runner: { emoji: '😄', tone: '#8aeaa6', label: 'Runner' },
-  commander: { emoji: '🫡', tone: '#8dd8ff', label: 'Commander' },
-  ranged: { emoji: '🪄', tone: '#ff9fd0', label: 'Ranged' },
-  legend: { emoji: '🧙', tone: '#ffe37a', label: 'Legend' }
-};
-
-// Optional image override paths. These are not required for gameplay.
-const OPTIONAL_FACE_ASSETS = {
+const FACE_ASSETS = {
   tank: 'assets/faces/adult-man.png',
   support: 'assets/faces/older-woman-toddler.png',
   charger: 'assets/faces/angry-selfie-kid.png',
@@ -173,8 +162,7 @@ class BattleGame {
     const unit = UNIT_LIBRARY[type];
     const wrap = document.createElement('button');
     wrap.className = 'unit-btn';
-    const face = FACE_THEME[unit.face] || FACE_THEME.runner;
-    wrap.innerHTML = `<div class="face-badge" title="${face.label}">${face.emoji}</div><div><div>${unit.name}</div><div class="meta">${unit.cost} energy</div></div>`;
+    wrap.innerHTML = `<img src="${FACE_ASSETS[unit.face]}" alt="${unit.name}"><div><div>${unit.name}</div><div class="meta">${unit.cost} energy</div></div>`;
     wrap.onclick = () => this.spawn(false, type);
     $('hud').appendChild(wrap);
     this.buttons.push({ type, el: wrap, cost: unit.cost });
@@ -414,20 +402,10 @@ class BattleGame {
       ctx.drawImage(img, u.x - 13, u.y - 55 + bob, 26, 26);
       ctx.restore();
     } else {
-      ctx.fillStyle = theme.tone;
+      ctx.fillStyle = '#fff';
       ctx.beginPath();
       ctx.arc(u.x, u.y - 42 + bob, 13, 0, Math.PI * 2);
       ctx.fill();
-      ctx.fillStyle = '#172033';
-      ctx.beginPath();
-      ctx.arc(u.x - 4, u.y - 45 + bob, 1.5, 0, Math.PI * 2);
-      ctx.arc(u.x + 4, u.y - 45 + bob, 1.5, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.strokeStyle = '#172033';
-      ctx.lineWidth = 1.2;
-      ctx.beginPath();
-      ctx.arc(u.x, u.y - 39 + bob, 4, 0.1, Math.PI - 0.1);
-      ctx.stroke();
     }
     ctx.fillStyle = '#0007';
     ctx.fillRect(u.x - 14, u.y - 59, 28, 5);
@@ -472,12 +450,10 @@ class BattleGame {
 }
 
 const imageCache = {};
-Object.values(OPTIONAL_FACE_ASSETS).forEach(src => {
-  if (!src) return;
+Object.values(FACE_ASSETS).forEach(src => {
   const img = new Image();
-  img.onload = () => { imageCache[src] = img; };
-  img.onerror = () => { imageCache[src] = null; };
   img.src = src;
+  imageCache[src] = img;
 });
 
 function startPrototype(key) {

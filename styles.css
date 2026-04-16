@@ -20,13 +20,11 @@ body {
 .subtitle { opacity: .85; margin-bottom: 8px; }
 #titlePortrait {
   width: min(90vw, 340px);
-  min-height: 120px;
+  max-height: 190px;
+  object-fit: cover;
   border-radius: 16px;
   border: 3px solid var(--accent);
-  background: linear-gradient(135deg, #1d3d88, #3f7ad1, #58c4ff);
-  display: grid;
-  place-items: center;
-  font-size: clamp(1.7rem, 4vw, 2.5rem);
+  background: #0003;
 }
 #prototypeCards {
   display: grid;
@@ -96,15 +94,13 @@ button:disabled { opacity: .4; cursor: not-allowed; }
   color: #112;
   padding: 8px;
 }
-.unit-btn .face-badge {
+.unit-btn img {
   width: 44px;
   height: 44px;
-  display: grid;
-  place-items: center;
-  font-size: 1.25rem;
+  object-fit: cover;
   border-radius: 999px;
   border: 2px solid #233;
-  background: radial-gradient(circle at 30% 30%, #fff7cc, #ffcf8a);
+  background: #ddd;
 }
 .unit-btn .meta { font-size: .76rem; opacity: .75; }
 #resultOverlay {

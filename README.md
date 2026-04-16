@@ -21,10 +21,9 @@ A small HTML/CSS/JS Canvas project containing **4 genuinely playable prototype v
 - **Prototype D — Hero Ability**
   - Fewer units, dramatic identities, active cooldown abilities
 
-## Optional face image setup (not required)
+## Face image setup
 
-The game is fully playable without any external face files.  
-If you want to override placeholders with real photos later, add files in `assets/faces/` using the optional names listed in:
+Put your images in `assets/faces/` using the exact names listed in:
 
 - `assets/faces/README.md`
 
