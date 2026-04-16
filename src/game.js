@@ -391,8 +391,10 @@ class BattleGame {
     ctx.fillRect(u.x - 10, u.y - 32 + bob, 20, 26);
     ctx.fillStyle = '#222';
     ctx.fillRect(u.x - 13 * dir, u.y - 9, 26, 6);
-    const img = imageCache[FACE_ASSETS[u.face]];
-    if (img) {
+    const theme = FACE_THEME[u.face] || FACE_THEME.runner;
+    const img = imageCache[OPTIONAL_FACE_ASSETS[u.face]];
+    const hasLoadedImage = img && img.complete && img.naturalWidth > 0;
+    if (hasLoadedImage) {
       ctx.save();
       ctx.beginPath();
       ctx.arc(u.x, u.y - 42 + bob, 13, 0, Math.PI * 2);
