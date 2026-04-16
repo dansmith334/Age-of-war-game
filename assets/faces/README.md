@@ -1,6 +1,9 @@
-# Family face images
+# Optional family face images
 
-Drop your family images here with these exact file names:
+These files are optional.  
+If missing, the game automatically uses built-in cartoon/emoji portrait placeholders.
+
+If you want to override placeholders, use these exact file names:
 
 - `adult-man.png` (tank/bruiser)
 - `older-woman-toddler.png` (support/healer)

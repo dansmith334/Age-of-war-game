@@ -1,4 +1,15 @@
-const FACE_ASSETS = {
+const FACE_THEME = {
+  tank: { emoji: '🧔', tone: '#8fb3ff', label: 'Tank' },
+  support: { emoji: '👵', tone: '#7de3db', label: 'Support' },
+  charger: { emoji: '😤', tone: '#ffc17d', label: 'Charger' },
+  runner: { emoji: '😄', tone: '#8aeaa6', label: 'Runner' },
+  commander: { emoji: '🫡', tone: '#8dd8ff', label: 'Commander' },
+  ranged: { emoji: '🪄', tone: '#ff9fd0', label: 'Ranged' },
+  legend: { emoji: '🧙', tone: '#ffe37a', label: 'Legend' }
+};
+
+// Optional image override paths. These are not required for gameplay.
+const OPTIONAL_FACE_ASSETS = {
   tank: 'assets/faces/adult-man.png',
   support: 'assets/faces/older-woman-toddler.png',
   charger: 'assets/faces/angry-selfie-kid.png',
@@ -82,6 +93,34 @@ const $ = id => document.getElementById(id);
 const canvas = $('battleCanvas');
 const ctx = canvas.getContext('2d');
 let game = null;
+const canUseImageCtor = typeof Image !== 'undefined';
+
+function getRenderableFaceImage(faceKey) {
+  const src = OPTIONAL_FACE_ASSETS[faceKey];
+  if (!src) return null;
+  const img = imageCache[src];
+  if (!img) return null;
+  if (!img.complete) return null;
+  if (typeof img.naturalWidth !== 'number' || img.naturalWidth <= 0) return null;
+  return img;
+}
+
+function drawPlaceholderHead(ctx2d, x, y, tone) {
+  ctx2d.fillStyle = tone;
+  ctx2d.beginPath();
+  ctx2d.arc(x, y, 13, 0, Math.PI * 2);
+  ctx2d.fill();
+  ctx2d.fillStyle = '#172033';
+  ctx2d.beginPath();
+  ctx2d.arc(x - 4, y - 3, 1.5, 0, Math.PI * 2);
+  ctx2d.arc(x + 4, y - 3, 1.5, 0, Math.PI * 2);
+  ctx2d.fill();
+  ctx2d.strokeStyle = '#172033';
+  ctx2d.lineWidth = 1.2;
+  ctx2d.beginPath();
+  ctx2d.arc(x, y + 3, 4, 0.1, Math.PI - 0.1);
+  ctx2d.stroke();
+}
 
 function createMenu() {
   const cards = $('prototypeCards');
@@ -162,7 +201,8 @@ class BattleGame {
     const unit = UNIT_LIBRARY[type];
     const wrap = document.createElement('button');
     wrap.className = 'unit-btn';
-    wrap.innerHTML = `<img src="${FACE_ASSETS[unit.face]}" alt="${unit.name}"><div><div>${unit.name}</div><div class="meta">${unit.cost} energy</div></div>`;
+    const face = FACE_THEME[unit.face] || FACE_THEME.runner;
+    wrap.innerHTML = `<div class="face-badge" title="${face.label}">${face.emoji}</div><div><div>${unit.name}</div><div class="meta">${unit.cost} energy</div></div>`;
     wrap.onclick = () => this.spawn(false, type);
     $('hud').appendChild(wrap);
     this.buttons.push({ type, el: wrap, cost: unit.cost });
@@ -186,7 +226,7 @@ class BattleGame {
     this[refEnergy] -= unit.cost;
     const x = enemy ? this.w - 110 : 110;
     this.units.push({
-      ...structuredClone(unit),
+      ...unit,
       type,
       team,
       hp: unit.hp,
@@ -392,9 +432,8 @@ class BattleGame {
     ctx.fillStyle = '#222';
     ctx.fillRect(u.x - 13 * dir, u.y - 9, 26, 6);
     const theme = FACE_THEME[u.face] || FACE_THEME.runner;
-    const img = imageCache[OPTIONAL_FACE_ASSETS[u.face]];
-    const hasLoadedImage = img && img.complete && img.naturalWidth > 0;
-    if (hasLoadedImage) {
+    const img = getRenderableFaceImage(u.face);
+    if (img) {
       ctx.save();
       ctx.beginPath();
       ctx.arc(u.x, u.y - 42 + bob, 13, 0, Math.PI * 2);
@@ -402,10 +441,7 @@ class BattleGame {
       ctx.drawImage(img, u.x - 13, u.y - 55 + bob, 26, 26);
       ctx.restore();
     } else {
-      ctx.fillStyle = '#fff';
-      ctx.beginPath();
-      ctx.arc(u.x, u.y - 42 + bob, 13, 0, Math.PI * 2);
-      ctx.fill();
+      drawPlaceholderHead(ctx, u.x, u.y - 42 + bob, theme.tone);
     }
     ctx.fillStyle = '#0007';
     ctx.fillRect(u.x - 14, u.y - 59, 28, 5);
@@ -450,10 +486,17 @@ class BattleGame {
 }
 
 const imageCache = {};
-Object.values(FACE_ASSETS).forEach(src => {
+Object.values(OPTIONAL_FACE_ASSETS).forEach(src => {
+  if (!src) return;
+  if (!canUseImageCtor) {
+    imageCache[src] = null;
+    return;
+  }
   const img = new Image();
+  img.onload = () => { imageCache[src] = img; };
+  img.onerror = () => { imageCache[src] = null; };
+  imageCache[src] = null;
   img.src = src;
-  imageCache[src] = img;
 });
 
 function startPrototype(key) {
